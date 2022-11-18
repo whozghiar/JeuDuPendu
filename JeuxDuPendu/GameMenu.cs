@@ -39,12 +39,14 @@ namespace JeuxDuPendu
 
         /// <summary>
         /// Méthode appelée lors du survol du bouton Solo.
+        /// - Change le curseur de la souris en main.
         /// - Change la couleur du bouton en orange.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bSolo_MouseHover(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Hand;
             bSolo.BackColor = Color.Orange;
         }
 
@@ -56,6 +58,7 @@ namespace JeuxDuPendu
         /// <param name="e"></param>
         private void bSolo_MouseLeave(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Default;
             bSolo.BackColor = Color.Yellow;
         }
 
@@ -77,26 +80,30 @@ namespace JeuxDuPendu
             multijoueurMenu.Show();
 
         }
-        
+
         /// <summary>
         /// Méthode appelée lors du survol du bouton Multi.
+        /// - Change le curseur de la souris en main.
         /// - Changement de la couleur du bouton en orange.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bMulti_MouseHover(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Hand;
             bMulti.BackColor = Color.Orange;
         }
 
         /// <summary>
         /// Méthode appelée lors de la sortie du survol du bouton Multi.
+        /// - Change le curseur de la souris en flèche.
         /// - Changement de la couleur du bouton en jaune.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bMulti_MouseLeave(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Default;
             bMulti.BackColor = Color.Yellow;
         }
 

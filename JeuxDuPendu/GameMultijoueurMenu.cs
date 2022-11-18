@@ -40,23 +40,27 @@ namespace JeuxDuPendu
         }
         /// <summary>
         /// Méthode appelée lors du survol du bouton MultiLocal.
+        /// - Change le curseur de la souris en main.
         /// - Change la couleur du bouton en orange.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bMultiLocal_MouseHover(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Hand;
             bMultiLocal.BackColor = Color.Orange;
         }
 
         /// <summary>
         /// Méthode appelée lors de la sortie du survol du bouton MultiLocal.
+        /// - Change le curseur de la souris en flèche.
         /// - Change la couleur du bouton en jaune.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bMultiLocal_MouseLeave(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Default;
             bMultiLocal.BackColor = Color.Yellow; 
         }
         #endregion
@@ -78,23 +82,27 @@ namespace JeuxDuPendu
 
         /// <summary>
         /// Méthode appelée lors du survol du bouton créer.
+        /// - Change le curseur de la souris en main.
         /// - Change la couleur du bouton en orange.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bCreer_MouseHover(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Hand;
             bCreer.BackColor = Color.Orange;
         }
 
         /// <summary>
         /// Méthode appelée lors de la sortie du survol du bouton Solo.
+        /// - Change le curseur en flèche.
         /// - Change la couleur du bouton en jaune.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bCreer_MouseLeave(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Default;
             bCreer.BackColor = Color.Yellow;
         }
         #endregion
@@ -154,23 +162,27 @@ namespace JeuxDuPendu
 
         /// <summary>
         /// Méthode appelée lors du survol du bouton retour.
+        /// - Change le curseur en main.
         /// - Change la couleur du bouton en rouge.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bRetour_MouseHover(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Hand;
             bRetour.BackColor = Color.Red;
         }
 
         /// <summary>
         /// Méthode appelée lors de la sortie du survol du bouton retour.
+        /// - Change le curseur de la souris en flèche.
         /// - Change la couleur du bouton en vert clair.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bRetour_MouseLeave(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Default;
             bRetour.BackColor = Color.LightGreen;
         }
 

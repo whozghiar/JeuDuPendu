@@ -14,6 +14,9 @@ namespace JeuxDuPendu.Forms
     {
 
         private Form parent;
+        private string ipServeur;
+        private string port;
+        private string pseudo;
         
         public Connexion()
         {
@@ -26,6 +29,35 @@ namespace JeuxDuPendu.Forms
             this.parent = parent;
         }
 
+
+        /// <summary>
+        /// Retourne l'IP du serveur.
+        /// </summary>
+        /// <returns></returns>
+        public string getIpServeur()
+        {
+            return this.ipServeur;
+        }
+
+        /// <summary>
+        /// Retourne le port.
+        /// </summary>
+        /// <returns></returns>
+        public string getIpPort()
+        {
+            return this.port;
+        }
+
+        /// <summary>
+        /// Retourne le sport.
+        /// </summary>
+        /// <returns></returns>
+        public string getPseudo()
+        {
+            return this.pseudo;
+        }
+
+
         #region Gestion des évènements
 
         #region Gestion du bouton Créer.
@@ -37,28 +69,38 @@ namespace JeuxDuPendu.Forms
         /// <param name="e"></param>
         private void bCreer_Click(object sender, EventArgs e)
         {
+            this.ipServeur = this.tBoxPseudo.Text;
+            this.port = this.tBoxPort.Text;
+            this.pseudo = this.tBoxPseudo.Text;
+
+            new GameForm(true, false, this).Show();
             
+            this.Close();
         }
 
         /// <summary>
         /// Méthode appelée lors du survol du bouton Créer.
+        /// - Change le curseur en main.
         /// - Change la couleur du bouton en orange.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bCreer_MouseHover(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Hand;
             bCreer.BackColor = Color.Orange;
         }
 
         /// <summary>
         /// Méthode appelée lors de la sortie du survol du bouton Créer.
+        /// - Change le curseur en flèche.
         /// - Change la couleur du bouton en jaune.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bCreer_MouseLeave(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Default;
             bCreer.BackColor = Color.Yellow;
         }
         #endregion
@@ -77,25 +119,30 @@ namespace JeuxDuPendu.Forms
             parent.Show();
             this.Close();
         }
+        
         /// <summary>
         /// Méthode appelée lors du survol du bouton Retour.
+        /// - Change le curseur en main.
         /// - Change la couleur du bouton en rouge.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bRetour_MouseHover(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Hand;
             bRetour.BackColor = Color.Red;
         }
 
         /// <summary>
         /// Méthode appelée lors de la sortie du survol du bouton Retour.
+        /// - Change le curseur en default.
         /// - Change la couleur du bouton en vert clair.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bRetour_MouseLeave(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Default;
             bRetour.BackColor = Color.LightGreen;
         }
         #endregion
@@ -138,6 +185,5 @@ namespace JeuxDuPendu.Forms
         #endregion
 
         #endregion
-
     }
 }

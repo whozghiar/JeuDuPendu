@@ -109,7 +109,7 @@ namespace JeuxDuPendu.MyControls
                 return false;
             }
         }
-
+        
         /// <summary>
         /// Si le mot est complet on retour true.
         /// Sinon on retour false.
@@ -128,5 +128,35 @@ namespace JeuxDuPendu.MyControls
             }
         }
 
+        /// <summary>
+        /// Si le mot existe dans le dictionnaire on retourne true.
+        /// </summary>
+        /// <param name="mot"></param>
+        /// <returns></returns>
+        public static bool motExiste(string mot)
+        {
+            string nomFichier = "..\\..\\Resources\\Dictionnaire.txt";
+            try
+            {
+                string[] data = System.IO.File.ReadAllLines(nomFichier);
+                int lastRow = data.Count();
+                int randomLine = new Random().Next(lastRow);
+
+                StreamReader sr = new StreamReader(nomFichier);
+
+                for (int i = 0; i < lastRow; i++)
+                {
+                    if (sr.ReadLine() == mot)
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (IOException e)
+            {
+                MessageBox.Show("Erreur durant la lecture du fichier : " + e.Message);
+            }
+            return false;
+        }
     }
 }

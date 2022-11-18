@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Xml;
 using JeuxDuPendu.Forms;
 using JeuxDuPendu.MyControls;
+using JeuxDuPendu.Online;
 
 namespace JeuxDuPendu
 {
@@ -70,6 +71,17 @@ namespace JeuxDuPendu
         #endregion
 
         #region Parti Multijoueur distant
+
+        // Déclaration d'un thread.
+        private System.Threading.Thread networkThread;
+        
+
+        /// <summary>
+        /// Constructeur Multijoueur (Serveur)
+        /// </summary>
+        /// <param name="multijoueur"></param>
+        /// <param name="isServer"></param>
+        /// <param name="parent"></param>
         public GameForm(bool multijoueur, bool isServer, Form parent)
         {
             InitializeComponent();
@@ -78,10 +90,104 @@ namespace JeuxDuPendu
             this.parent = parent;
             this.multijoueurDistant = multijoueur;
 
+            if (isServer)
+            {
+                bRetour.Enabled = false;
+                
+                // Création d'un thread pour le serveur.
+                networkThread = new System.Threading.Thread(new System.Threading.ThreadStart(StartServer));
+                networkThread.Start();
+            }
         }
-#endregion
-        
-        
+
+        public GameForm(bool multijoueur, string ip, string port, string pseudo)
+        {
+            InitializeComponent();
+            InitializeMyComponent();
+            StartNewGame();
+            
+            this.multijoueurDistant = multijoueur;
+            
+            runClient();
+        }
+
+
+
+        public void StartServer()
+        {
+
+            // Créer un serveur avec la classe TcpListener
+            TcpListener server = new TcpListener(IPAddress.Parse("192.168.1.84"), 1234);
+            server.Start();
+
+            for(; ; )
+            {
+
+                if (server.Pending())
+                {
+                    // Attendre une connexion
+                    TcpClient client = server.AcceptTcpClient();
+
+                    // Créer un flux de données pour la communication
+
+                    NetworkStream stream = client.GetStream();
+
+                    byte[] bytes = new byte[client.ReceiveBufferSize];
+                    stream.Read(bytes, 0, (int)client.ReceiveBufferSize);
+                    String dataReceived = Encoding.ASCII.GetString(bytes);
+
+                    Console.WriteLine("mamacita");
+
+                    // Je devine le mot
+
+                    Mot motForm = new Mot(this);
+                    motForm.Show();
+                   
+
+                    while (!motForm.getWordReady()); // Attend une réponse.
+                    
+                    string mot = motForm.getMot();
+
+                    byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(mot);
+                    stream.Write(bytesToSend, 0, bytesToSend.Length);
+                    client.Close();
+                }
+
+            }
+        }
+
+        public void runClient()
+        {
+            string textToSend = "";
+            TcpClient client = new TcpClient("192.168.1.84", 1234);
+            NetworkStream nwStream = client.GetStream();
+
+            
+            Mot motForm = new Mot(this);
+            motForm.Show();
+
+            while (!motForm.getWordReady()) ; // Attend une réponse.
+            
+            textToSend = motForm.getMot();
+            
+            byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
+            nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+            
+            // Il attend que le serveur lui réponde (finisse sa partie).
+            
+            byte[] bytesToRead = new byte[client.ReceiveBufferSize];
+            int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
+            Console.WriteLine("Le nouveau mot à dechiffrado  : " + Encoding.ASCII.GetString(bytesToRead, 0, bytesRead));
+            string txtReceived = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
+
+            Console.WriteLine("Mamacita");
+
+            client.Close();
+        }
+
+        #endregion
+
+
         /// <summary>
         /// Initialisations des composant specifique a l'application
         /// </summary>
@@ -107,7 +213,8 @@ namespace JeuxDuPendu
 
 
             // Récupération d'un mot aléatoire dans l'attribut randomWord
-            this.randomWord = GameRules.genererMotAleatoire();
+            if(!multijoueurDistant) this.randomWord = GameRules.genererMotAleatoire();
+
 
             // Le label contenant les mauvaises lettres est mis à vide.
             lMauvaisesLettres.Text = "";
@@ -254,26 +361,30 @@ namespace JeuxDuPendu
                 KeyPressed(e.KeyChar);
             }
 
-            /// <summary>
-            /// Methode appelée lors du survol du bouton "Nouvelle partie".
-            /// Elle change la couleur du bouton en orange.
-            /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="e"></param>
-            private void bReset_MouseHover(object sender, EventArgs e)
+        /// <summary>
+        /// Methode appelée lors du survol du bouton "Nouvelle partie".
+        /// - Change le curseur de la souris en "Main".
+        /// Elle change la couleur du bouton en orange.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bReset_MouseHover(object sender, EventArgs e)
             {
+                Cursor.Current = Cursors.Hand;
                 bReset.BackColor = Color.Orange;
             }
 
             /// <summary>
             /// Methode appelée lorsque la souris quitte le bouton "Nouvelle partie".
+            /// - Change le curseur de la souris en flèche.
             /// Elle change la couleur du bouton en jaune.
             /// </summary>
             /// <param name="sender"></param>
             /// <param name="e"></param>
             private void bReset_MouseLeave(object sender, EventArgs e)
             {
-                bReset.BackColor = Color.Yellow;
+            Cursor.Current = Cursors.Default;
+            bReset.BackColor = Color.Yellow;
             }
 
             /// <summary>
@@ -302,28 +413,32 @@ namespace JeuxDuPendu
 
             }
 
-            /// <summary>
-            /// Methode appelée lors du survol du bouton "Retour".
-            /// Elle change la couleur du bouton en rouge.
-            /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="e"></param>
-            private void bRetour_MouseHover(object sender, EventArgs e)
+        /// <summary>
+        /// Methode appelée lors du survol du bouton "Retour".
+        /// - Change le curseur de la souris en "Main"
+        /// Elle change la couleur du bouton en rouge.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bRetour_MouseHover(object sender, EventArgs e)
             {
-                bRetour.BackColor = Color.Red;
+            Cursor.Current = Cursors.Hand;
+            bRetour.BackColor = Color.Red;
             }
 
-            /// <summary>
-            /// Méthode appelée lorsque la souris n'est plus sur le bouton "Retour".
-            /// Elle change la couleur en vert clair.
-            /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="e"></param>
-            private void bRetour_MouseLeave(object sender, EventArgs e)
-            {
-                bRetour.BackColor = Color.LightGreen;
-            }
-            #endregion
+        /// <summary>
+        /// Méthode appelée lorsque la souris n'est plus sur le bouton "Retour".
+        /// - Change le curseur de la souris en "Default"
+        /// Elle change la couleur en vert clair.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void bRetour_MouseLeave(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.Default;
+            bRetour.BackColor = Color.LightGreen;
+        }
+        #endregion
 
             #region Gestion du bouton de sortie.
 

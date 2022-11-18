@@ -119,23 +119,27 @@ namespace JeuxDuPendu.Forms
         }
         /// <summary>
         /// Méthode appelée lors du survol du bouton Retour.
+        /// - Change le curseur en main.
         /// - Change la couleur du bouton en Rouge.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bRetour_MouseHover(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Hand;
             bRetour.BackColor = Color.Red;
         }
 
         /// <summary>
         /// Méthode appelée lorsqu'on quitte le survol du bouton Retour.
+        /// - Change le curseur en flèche.
         /// - Change la couleur du bouton en vert clair.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bRetour_MouseLeave(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Default;
             bRetour.BackColor = Color.LightGreen;
         }
 
@@ -157,17 +161,20 @@ namespace JeuxDuPendu.Forms
         }
         /// <summary>
         /// Méthode appelée lors du survol du bouton Démarrer.
+        /// - Change le curseur en main.
         /// - Change la couleur du bouton en Orange.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bDemarrer_MouseHover(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Hand;
             bDemarrer.BackColor = Color.Orange;
         }
 
         /// <summary>
         /// Méthode appelée lorsqu'on quitte le survol du bouton Démarrer.
+        /// - Change le curseur en flèche.
         /// - Change la couleur du bouton en Jaune.
         /// </summary>
         /// <param name="sender"></param>

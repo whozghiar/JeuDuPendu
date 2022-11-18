@@ -14,7 +14,7 @@ namespace JeuxDuPendu.Forms
     {
 
         private Form parent;
-
+        
         public Creation()
         {
             InitializeComponent();
@@ -39,27 +39,33 @@ namespace JeuxDuPendu.Forms
         /// <param name="e"></param>
         private void bCreer_Click(object sender, EventArgs e)
         {
+            new GameForm(true, true, this).Show();
+            this.Close();
         }
 
         /// <summary>
         /// Méthode appelée lors du survol du bouton Créer.
+        /// - Change le curseur en main.
         /// - Change la couleur du bouton en orange.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bCreer_MouseHover(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Hand;
             bCreer.BackColor = Color.Orange;
         }
 
         /// <summary>
         /// Méthode appelée lors de la sortie du survol du bouton Créer.
+        /// - Change le curseur en flèche.
         /// - Change la couleur du bouton en jaune.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bCreer_MouseLeave(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Default;
             bCreer.BackColor = Color.Yellow;
         }
         #endregion
@@ -81,23 +87,27 @@ namespace JeuxDuPendu.Forms
 
         /// <summary>
         /// Méthode appelée lors du survol du bouton retour.
+        /// - Change le curseur en main.
         /// - Change la couleur du bouton en rouge.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bRetour_MouseHover(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Hand;
             bRetour.BackColor = Color.Red;
         }
-        
+
         /// <summary>
         /// Méthode appelée lors de la sortie du survol du bouton retour.
+        /// - Change le curseur en flèche.
         /// - Change la couleur du bouton en vert clair.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void bRetour_MouseLeave(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.Default;
             bRetour.BackColor = Color.LightGreen;
         }
         #endregion

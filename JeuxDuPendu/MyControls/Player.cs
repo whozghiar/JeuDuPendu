@@ -80,6 +80,7 @@ namespace JeuxDuPendu.MyControls
             return null;
         }
 
+        
         public static int getNbJoueurs()
         {
             return joueurs.Count;
