@@ -38,6 +38,8 @@ namespace JeuxDuPendu
 
             this.parent = parent;
         }
+
+        #region Partie Multijoueur Local.
         
         private Player joueur1 = null;
         private Player joueur2 = null;
@@ -65,7 +67,9 @@ namespace JeuxDuPendu
                 
             }
         }
+        #endregion
 
+        #region Parti Multijoueur distant
         public GameForm(bool multijoueur, bool isServer, Form parent)
         {
             InitializeComponent();
@@ -75,7 +79,9 @@ namespace JeuxDuPendu
             this.multijoueurDistant = multijoueur;
 
         }
-
+#endregion
+        
+        
         /// <summary>
         /// Initialisations des composant specifique a l'application
         /// </summary>
@@ -111,180 +117,252 @@ namespace JeuxDuPendu
         }
 
 
-        /// <summary>
-        /// Methode appelé lors de l'appui d'un touche du clavier, lorsque le focus est sur le bouton "Nouvelle partie"
-        /// </summary>
-        private void bReset_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            KeyPressed(e.KeyChar);
-        }
+    #region Gestion des évènements.
 
-        /// <summary>
-        /// Methode appelé lors de l'appui d'un touche du clavier, lorsque le focus est sur le forulaire
-        /// </summary>
-        private void GameForm_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            KeyPressed(e.KeyChar);
-        }
-
-        /// <summary>
-        /// Methode appelé lors de l'appui sur le bouton "Nouvelle partie"
-        /// </summary>
-        private void bReset_Click(object sender, EventArgs e)
-        {
-            StartNewGame();
-        }
-
-        private void KeyPressed(char letter)
-        {
-            letter = char.ToUpper(letter);
-            //MessageBox.Show("Mot : " + this.randomWord + "\nLettre tapée : " + letter);
-            
-            // Si la lettre est comprise entre A et Z
-            if (GameRules.isLetter(letter))
+            #region Gestion du chargement du formulaire.
+        
+            /// <summary>
+            /// Méthode appelée lorsque le formulaire est chargé.
+            /// Si le multijoueur local est activé.
+            ///     Alors, le nom du joueur est affiché.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void GameForm_Load(object sender, EventArgs e)
             {
-                // Si la lettre est dans le randomWord
-                if (this.randomWord.Contains(letter))
+                if (this.multijoueurLocal == true) this.lJoueur.Visible = true;
+            }
+            #endregion
+
+            #region Gestion d'une touche du clavier appuyée.
+            /// <summary>
+            /// Methode appelé lors de l'appui d'un touche du clavier, lorsque le focus est sur le forulaire
+            /// </summary>
+            private void GameForm_KeyPress(object sender, KeyPressEventArgs e)
+            {
+                KeyPressed(e.KeyChar);
+            }
+            private void KeyPressed(char letter)
+            {
+                letter = char.ToUpper(letter);
+                //MessageBox.Show("Mot : " + this.randomWord + "\nLettre tapée : " + letter);
+            
+                // Si la lettre est comprise entre A et Z
+                if (GameRules.isLetter(letter))
                 {
-                    // On affiche la lettre dans le label
-                    lCrypedWord.Text = GameRules.decrypterMot(this.randomWord, lCrypedWord.Text, letter);
-                }
-                else
-                {
-                    if (lMauvaisesLettres.Text.Contains(letter) == false)
+                    // Si la lettre est dans le randomWord
+                    if (this.randomWord.Contains(letter))
                     {
-                        lMauvaisesLettres.Text = GameRules.mauvaisesLettres(lMauvaisesLettres.Text, letter); // On ajoute la lettre dans le label des mauvaises lettres
-
-                        if (this.multijoueurLocal == true) // Si le jeu est en multijoueurLocal.
+                        // On affiche la lettre dans le label
+                        lCrypedWord.Text = GameRules.decrypterMot(this.randomWord, lCrypedWord.Text, letter);
+                    }
+                    else
+                    {
+                        if (lMauvaisesLettres.Text.Contains(letter) == false)
                         {
-                            // On avance le pendu d'une etape
-                            _HangmanViewer.MoveNextStep();
+                            lMauvaisesLettres.Text = GameRules.mauvaisesLettres(lMauvaisesLettres.Text, letter); // On ajoute la lettre dans le label des mauvaises lettres
 
-                            // On change le joueur actif.
-                            if (joueurActif == joueur1)
+                            if (this.multijoueurLocal == true) // Si le jeu est en multijoueurLocal.
                             {
-                                joueurActif = joueur2;
+                                // On avance le pendu d'une etape
+                                _HangmanViewer.MoveNextStep();
+
+                                // On change le joueur actif.
+                                if (joueurActif == joueur1)
+                                {
+                                    joueurActif = joueur2;
+                                }
+                                else
+                                {
+                                    joueurActif = joueur1;
+                                }
+
+                                lJoueur.Text = joueurActif.Pseudo;
+                                lJoueur.BackColor = joueurActif.Couleur;
+
                             }
                             else
                             {
-                                joueurActif = joueur1;
+                                // On passe à l'étape suivante.
+                                _HangmanViewer.MoveNextStep();
                             }
-
-                            lJoueur.Text = joueurActif.Pseudo;
-                            lJoueur.BackColor = joueurActif.Couleur;
 
                         }
                         else
                         {
-                            // On passe à l'étape suivante.
-                            _HangmanViewer.MoveNextStep();
+                            MessageBox.Show("La lettre " + letter + " a déjà été essayée");
                         }
 
                     }
-                    else
+
+                    if (GameRules.motComplet(lCrypedWord.Text)) // Si le mot est complété.
                     {
-                        MessageBox.Show("La lettre " + letter + " a déjà été essayée");
-                    }
 
-                }
-
-                if (GameRules.motComplet(lCrypedWord.Text)) // Si le mot est complété.
-                {
-
-                    if (this.multijoueurLocal == true)
-                    {
-                        if (joueurActif.Pseudo == joueur1.Pseudo) joueur1.Score++; // Si le joueur actif est le joueur 1, on augmente son score.
-                        else joueur2.Score++; // Sinon on augmente le score du joueur 2.
-                        MessageBox.Show("Bravo " + joueurActif.Pseudo +
-                                        " vous avez trouvé le mot : " +
-                                        this.randomWord +
-                                        "\nLes scores sont : \n" +
-                                        joueur1.Pseudo + " : " + joueur1.Score + "\n" +
-                                        joueur2.Pseudo + " : " + joueur2.Score + "\n");
+                        if (this.multijoueurLocal == true)
+                        {
+                            if (joueurActif.Pseudo == joueur1.Pseudo) joueur1.Score++; // Si le joueur actif est le joueur 1, on augmente son score.
+                            else joueur2.Score++; // Sinon on augmente le score du joueur 2.
+                            MessageBox.Show("Bravo " + joueurActif.Pseudo +
+                                            " vous avez trouvé le mot : " +
+                                            this.randomWord +
+                                            "\nLes scores sont : \n" +
+                                            joueur1.Pseudo + " : " + joueur1.Score + "\n" +
+                                            joueur2.Pseudo + " : " + joueur2.Score + "\n");
                         
-                        Player.enregistrerScore(joueur1, joueur2);
+                            Player.enregistrerScore(joueur1, joueur2);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Bravo vous avez trouvé le mot :" + this.randomWord + "\n"); // On affiche un message de victoire.
+                        }
+                        StartNewGame();
                     }
-                    else
-                    {
-                        MessageBox.Show("Bravo vous avez trouvé le mot :" + this.randomWord + "\n"); // On affiche un message de victoire.
-                    }
-                    StartNewGame();
-                }
 
-                // Si le pendu est complet, le joueur à perdu.
-                if (_HangmanViewer.IsGameOver)
+                    // Si le pendu est complet, le joueur à perdu.
+                    if (_HangmanViewer.IsGameOver)
+                    {
+                        if (this.multijoueurLocal == true)
+                        {
+                            MessageBox.Show("Le joueur " + joueurActif.Pseudo + " a perdu.\nLe mot était : " + this.randomWord + "\n");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Perdu ! Le mot était : " + randomWord + "\n");
+                        }
+                        StartNewGame();
+                    }
+                }
+                else
                 {
-                    if (this.multijoueurLocal == true)
-                    {
-                        MessageBox.Show("Le joueur " + joueurActif.Pseudo + " a perdu.\nLe mot était : " + this.randomWord + "\n");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Perdu ! Le mot était : " + randomWord + "\n");
-                    }
-                    StartNewGame();
+                    MessageBox.Show("La lettre doit être dans l'alphabet.");
                 }
+            
+            
+            
             }
-            else
+
+
+            #endregion
+
+            #region Gestion du bouton Reset.
+
+            /// <summary>
+            /// Methode appelé lors de l'appui d'un touche du clavier, lorsque le focus est sur le bouton "Nouvelle partie"
+            /// </summary>
+            private void bReset_KeyPress(object sender, KeyPressEventArgs e)
             {
-                MessageBox.Show("La lettre doit être dans l'alphabet.");
+                KeyPressed(e.KeyChar);
             }
-            
-            
-            
-        }
 
+            /// <summary>
+            /// Methode appelée lors du survol du bouton "Nouvelle partie".
+            /// Elle change la couleur du bouton en orange.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void bReset_MouseHover(object sender, EventArgs e)
+            {
+                bReset.BackColor = Color.Orange;
+            }
 
-        #region Trigger
-        private void bRetour_Click(object sender, EventArgs e)
-        {
-            parent.Show();
-            this.Close();
+            /// <summary>
+            /// Methode appelée lorsque la souris quitte le bouton "Nouvelle partie".
+            /// Elle change la couleur du bouton en jaune.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void bReset_MouseLeave(object sender, EventArgs e)
+            {
+                bReset.BackColor = Color.Yellow;
+            }
 
-        }
+            /// <summary>
+            /// Methode appelé lors de l'appui sur le bouton "Nouvelle partie"
+            /// ELle démarre une nouvelle partie.
+            /// </summary>
+            private void bReset_Click(object sender, EventArgs e)
+            {
+                StartNewGame();
+            }
+
+            #endregion
         
+            #region Gestion du bouton Retour.
+        
+            /// <summary>
+            /// Méthode appelée lors du clic sur le bouton retour.
+            /// Elle raffiche le formulaire parent et ferme le formulaire actuel.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void bRetour_Click(object sender, EventArgs e)
+            {
+                parent.Show();
+                this.Close();
 
-        private void GameForm_Load(object sender, EventArgs e)
-        {
-            if (this.multijoueurLocal == true) this.lJoueur.Visible = true;
-        }
+            }
 
-        private void bReset_MouseHover(object sender, EventArgs e)
-        {
-            bReset.BackColor = Color.Orange;
-        }
+            /// <summary>
+            /// Methode appelée lors du survol du bouton "Retour".
+            /// Elle change la couleur du bouton en rouge.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void bRetour_MouseHover(object sender, EventArgs e)
+            {
+                bRetour.BackColor = Color.Red;
+            }
 
-        private void bReset_MouseLeave(object sender, EventArgs e)
-        {
-            bReset.BackColor = Color.Yellow;
-        }
+            /// <summary>
+            /// Méthode appelée lorsque la souris n'est plus sur le bouton "Retour".
+            /// Elle change la couleur en vert clair.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void bRetour_MouseLeave(object sender, EventArgs e)
+            {
+                bRetour.BackColor = Color.LightGreen;
+            }
+            #endregion
 
-        private void bRetour_MouseHover(object sender, EventArgs e)
-        {
-            bRetour.BackColor = Color.Red;
-        }
+            #region Gestion du bouton de sortie.
 
-        private void bRetour_MouseLeave(object sender, EventArgs e)
-        {
-            bRetour.BackColor = Color.LightGreen;
-        }
+            /// <summary>
+            /// Méthode appelée lors du survol de la sortie.
+            /// Change l'aspect du curseur.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void pBoxLeave_MouseHover(object sender, EventArgs e)
+            {
+                Cursor.Current = Cursors.Hand;
+            }
 
-        #endregion
+            /// <summary>
+            /// Méthode appelée lorsque la souris n'est plus sur la sortie.
+            /// Change l'aspect du curseur par défaut.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void pBoxLeave_MouseLeave(object sender, EventArgs e)
+            {
+                Cursor.Current = Cursors.Default;
+            }
 
-        private void pBoxLeave_Click(object sender, EventArgs e)
-        {
-            Environment.Exit(0);
-        }
+            /// <summary>
+            /// Méthode appelée au clic sur l'image de sortie.
+            /// Quitte le programme.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void pBoxLeave_Click(object sender, EventArgs e)
+            {
+                Environment.Exit(0);
+            }
 
-        private void pBoxLeave_MouseHover(object sender, EventArgs e)
-        {
-            Cursor.Current = Cursors.Hand;
-        }
+            #endregion
 
-        private void pBoxLeave_MouseLeave(object sender, EventArgs e)
-        {
-            Cursor.Current = Cursors.Default;
-        }
+    #endregion
     }
 
 }
