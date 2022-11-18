@@ -26,7 +26,7 @@ namespace JeuxDuPendu.Forms
         {
             InitializeComponent();
             this.parent = parent;
-            this.wordReady = false
+            this.wordReady = false;
         }
 
         /*
