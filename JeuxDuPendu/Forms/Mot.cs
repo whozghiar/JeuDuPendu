@@ -26,15 +26,22 @@ namespace JeuxDuPendu.Forms
         {
             InitializeComponent();
             this.parent = parent;
-            this.wordReady = false;
+            this.wordReady = false
         }
 
+        /*
+        public Mot(Form parent, string pseudo, string ip, string port)
+        {
+            
+        }*/
+        
         /// <summary>
         /// Retourne si le mot est prêt.
         /// </summary>
         /// <returns></returns>
         public bool getWordReady()
         {
+            Console.WriteLine("Pitié");
             return this.wordReady;
         }
 

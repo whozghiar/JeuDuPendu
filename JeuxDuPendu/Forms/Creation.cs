@@ -39,8 +39,9 @@ namespace JeuxDuPendu.Forms
         /// <param name="e"></param>
         private void bCreer_Click(object sender, EventArgs e)
         {
-            new GameForm(true, true, this).Show();
-            this.Close();
+            MessageBox.Show("Indisponible");
+            //new GameForm(true, true, this).Show();
+            //this.Close();
         }
 
         /// <summary>

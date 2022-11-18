@@ -73,9 +73,9 @@ namespace JeuxDuPendu.Forms
             this.port = this.tBoxPort.Text;
             this.pseudo = this.tBoxPseudo.Text;
 
-            new GameForm(true, false, this).Show();
-            
-            this.Close();
+            //new GameForm(true, false, this, this.ipServeur, this.port, this.pseudo).Show();
+            MessageBox.Show("Indisponible.");
+            //this.Close();
         }
 
         /// <summary>

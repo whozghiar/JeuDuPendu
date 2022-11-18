@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using System.Xml;
 using JeuxDuPendu.Forms;
 using JeuxDuPendu.MyControls;
-using JeuxDuPendu.Online;
 
 namespace JeuxDuPendu
 {
@@ -71,10 +70,10 @@ namespace JeuxDuPendu
         #endregion
 
         #region Parti Multijoueur distant
-
+        /*
         // Déclaration d'un thread.
         private System.Threading.Thread networkThread;
-        
+        private string ip, port;
 
         /// <summary>
         /// Constructeur Multijoueur (Serveur)
@@ -86,8 +85,10 @@ namespace JeuxDuPendu
         {
             InitializeComponent();
             InitializeMyComponent();
-            StartNewGame();
             this.parent = parent;
+
+            MessageBox.Show("Multijoueur lancé : " + multijoueur);
+            
             this.multijoueurDistant = multijoueur;
 
             if (isServer)
@@ -98,18 +99,35 @@ namespace JeuxDuPendu
                 networkThread = new System.Threading.Thread(new System.Threading.ThreadStart(StartServer));
                 networkThread.Start();
             }
+            
         }
 
-        public GameForm(bool multijoueur, string ip, string port, string pseudo)
+        /*
+        public GameForm(bool multijoueur, bool isServer, Form parent, string ip, string port, string pseudo)
         {
             InitializeComponent();
             InitializeMyComponent();
-            StartNewGame();
-            
+            this.parent = parent;
+
+            MessageBox.Show("Multijoueur lancé : " + multijoueur);
+
             this.multijoueurDistant = multijoueur;
-            
-            runClient();
+
+            if (isServer)
+            {
+                bRetour.Enabled = false;
+
+                // Création d'un thread pour le serveur.
+                networkThread = new System.Threading.Thread(new System.Threading.ThreadStart(StartServer));
+                networkThread.Start();
+            }
+            else
+            {
+                motForm = new Mot(this);
+                new System.Threading.Thread(new System.Threading.ThreadStart(runClient)).Start();
+            }
         }
+        
 
 
 
@@ -117,7 +135,7 @@ namespace JeuxDuPendu
         {
 
             // Créer un serveur avec la classe TcpListener
-            TcpListener server = new TcpListener(IPAddress.Parse("192.168.1.84"), 1234);
+            TcpListener server = new TcpListener(IPAddress.Parse("172.21.230.170"), 1234);
             server.Start();
 
             for(; ; )
@@ -135,9 +153,14 @@ namespace JeuxDuPendu
                     byte[] bytes = new byte[client.ReceiveBufferSize];
                     stream.Read(bytes, 0, (int)client.ReceiveBufferSize);
                     String dataReceived = Encoding.ASCII.GetString(bytes);
-
-                    Console.WriteLine("mamacita");
-
+                    this.randomWord = dataReceived;
+                    Console.WriteLine("mamacita\n");
+                    while (String.IsNullOrEmpty(this.randomWord))
+                    {
+                        Console.WriteLine("Pas de mot.\n");
+                    }
+                    Console.WriteLine("Mot reçu : " + this.randomWord + "\n");
+                    StartNewGame();
                     // Je devine le mot
 
                     Mot motForm = new Mot(this);
@@ -158,18 +181,21 @@ namespace JeuxDuPendu
 
         public void runClient()
         {
-            string textToSend = "";
-            TcpClient client = new TcpClient("192.168.1.84", 1234);
-            NetworkStream nwStream = client.GetStream();
-
             
-            Mot motForm = new Mot(this);
+
+            MessageBox.Show("Le client rentre.");
+            
+            
             motForm.Show();
 
+            MessageBox.Show("Le mot doit être tapé.");
+            
             while (!motForm.getWordReady()) ; // Attend une réponse.
             
-            textToSend = motForm.getMot();
+            string textToSend = motForm.getMot();
             
+            TcpClient client = new TcpClient("172.21.230.170", 1234);
+            NetworkStream nwStream = client.GetStream();
             byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
             nwStream.Write(bytesToSend, 0, bytesToSend.Length);
             
@@ -177,14 +203,17 @@ namespace JeuxDuPendu
             
             byte[] bytesToRead = new byte[client.ReceiveBufferSize];
             int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
-            Console.WriteLine("Le nouveau mot à dechiffrado  : " + Encoding.ASCII.GetString(bytesToRead, 0, bytesRead));
+            Console.WriteLine("Le nouveau mot à dechiffrado  : " + Encoding.ASCII.GetString(bytesToRead, 0, bytesRead)+"\n");
             string txtReceived = Encoding.ASCII.GetString(bytesToRead, 0, bytesRead);
-
-            Console.WriteLine("Mamacita");
+            
+            this.randomWord = txtReceived;
+            StartNewGame();
+            
+            Console.WriteLine("Mamacita\n");
 
             client.Close();
         }
-
+        */
         #endregion
 
 
@@ -213,7 +242,9 @@ namespace JeuxDuPendu
 
 
             // Récupération d'un mot aléatoire dans l'attribut randomWord
-            if(!multijoueurDistant) this.randomWord = GameRules.genererMotAleatoire();
+            if (multijoueurDistant == false) this.randomWord = GameRules.genererMotAleatoire();
+
+            //.Show("Le mot :" + this.randomWord);
 
 
             // Le label contenant les mauvaises lettres est mis à vide.
@@ -251,101 +282,101 @@ namespace JeuxDuPendu
             }
             private void KeyPressed(char letter)
             {
-                letter = char.ToUpper(letter);
-                //MessageBox.Show("Mot : " + this.randomWord + "\nLettre tapée : " + letter);
-            
-                // Si la lettre est comprise entre A et Z
-                if (GameRules.isLetter(letter))
+                if (String.IsNullOrEmpty(this.randomWord) == false)
                 {
-                    // Si la lettre est dans le randomWord
-                    if (this.randomWord.Contains(letter))
-                    {
-                        // On affiche la lettre dans le label
-                        lCrypedWord.Text = GameRules.decrypterMot(this.randomWord, lCrypedWord.Text, letter);
-                    }
-                    else
-                    {
-                        if (lMauvaisesLettres.Text.Contains(letter) == false)
+                        letter = char.ToUpper(letter);
+                        //MessageBox.Show("Mot : " + this.randomWord + "\nLettre tapée : " + letter);
+
+                        // Si la lettre est comprise entre A et Z
+                        if (GameRules.isLetter(letter))
                         {
-                            lMauvaisesLettres.Text = GameRules.mauvaisesLettres(lMauvaisesLettres.Text, letter); // On ajoute la lettre dans le label des mauvaises lettres
-
-                            if (this.multijoueurLocal == true) // Si le jeu est en multijoueurLocal.
+                            // Si la lettre est dans le randomWord
+                            if (this.randomWord.Contains(letter))
                             {
-                                // On avance le pendu d'une etape
-                                _HangmanViewer.MoveNextStep();
-
-                                // On change le joueur actif.
-                                if (joueurActif == joueur1)
-                                {
-                                    joueurActif = joueur2;
-                                }
-                                else
-                                {
-                                    joueurActif = joueur1;
-                                }
-
-                                lJoueur.Text = joueurActif.Pseudo;
-                                lJoueur.BackColor = joueurActif.Couleur;
-
+                                // On affiche la lettre dans le label
+                                lCrypedWord.Text = GameRules.decrypterMot(this.randomWord, lCrypedWord.Text, letter);
                             }
                             else
                             {
-                                // On passe à l'étape suivante.
-                                _HangmanViewer.MoveNextStep();
+                                if (lMauvaisesLettres.Text.Contains(letter) == false)
+                                {
+                                    lMauvaisesLettres.Text = GameRules.mauvaisesLettres(lMauvaisesLettres.Text, letter); // On ajoute la lettre dans le label des mauvaises lettres
+
+                                    if (this.multijoueurLocal == true) // Si le jeu est en multijoueurLocal.
+                                    {
+                                        // On avance le pendu d'une etape
+                                        _HangmanViewer.MoveNextStep();
+
+                                        // On change le joueur actif.
+                                        if (joueurActif == joueur1)
+                                        {
+                                            joueurActif = joueur2;
+                                        }
+                                        else
+                                        {
+                                            joueurActif = joueur1;
+                                        }
+
+                                        lJoueur.Text = joueurActif.Pseudo;
+                                        lJoueur.BackColor = joueurActif.Couleur;
+
+                                    }
+                                    else
+                                    {
+                                        // On passe à l'étape suivante.
+                                        _HangmanViewer.MoveNextStep();
+                                    }
+
+                                }
+                                else
+                                {
+                                    MessageBox.Show("La lettre " + letter + " a déjà été essayée");
+                                }
+
                             }
 
+                            if (GameRules.motComplet(lCrypedWord.Text)) // Si le mot est complété.
+                            {
+
+                                if (this.multijoueurLocal == true)
+                                {
+                                    if (joueurActif.Pseudo == joueur1.Pseudo) joueur1.Score++; // Si le joueur actif est le joueur 1, on augmente son score.
+                                    else joueur2.Score++; // Sinon on augmente le score du joueur 2.
+                                    MessageBox.Show("Bravo " + joueurActif.Pseudo +
+                                                    " vous avez trouvé le mot : " +
+                                                    this.randomWord +
+                                                    "\nLes scores sont : \n" +
+                                                    joueur1.Pseudo + " : " + joueur1.Score + "\n" +
+                                                    joueur2.Pseudo + " : " + joueur2.Score + "\n");
+
+                                    Player.enregistrerScore(joueur1, joueur2);
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Bravo vous avez trouvé le mot :" + this.randomWord + "\n"); // On affiche un message de victoire.
+                                }
+                                StartNewGame();
+                            }
+
+                            // Si le pendu est complet, le joueur à perdu.
+                            if (_HangmanViewer.IsGameOver)
+                            {
+                                if (this.multijoueurLocal == true)
+                                {
+                                    MessageBox.Show("Le joueur " + joueurActif.Pseudo + " a perdu.\nLe mot était : " + this.randomWord + "\n");
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Perdu ! Le mot était : " + randomWord + "\n");
+                                }
+                                StartNewGame();
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("La lettre " + letter + " a déjà été essayée");
+                            MessageBox.Show("La lettre doit être dans l'alphabet.");
                         }
-
-                    }
-
-                    if (GameRules.motComplet(lCrypedWord.Text)) // Si le mot est complété.
-                    {
-
-                        if (this.multijoueurLocal == true)
-                        {
-                            if (joueurActif.Pseudo == joueur1.Pseudo) joueur1.Score++; // Si le joueur actif est le joueur 1, on augmente son score.
-                            else joueur2.Score++; // Sinon on augmente le score du joueur 2.
-                            MessageBox.Show("Bravo " + joueurActif.Pseudo +
-                                            " vous avez trouvé le mot : " +
-                                            this.randomWord +
-                                            "\nLes scores sont : \n" +
-                                            joueur1.Pseudo + " : " + joueur1.Score + "\n" +
-                                            joueur2.Pseudo + " : " + joueur2.Score + "\n");
-                        
-                            Player.enregistrerScore(joueur1, joueur2);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Bravo vous avez trouvé le mot :" + this.randomWord + "\n"); // On affiche un message de victoire.
-                        }
-                        StartNewGame();
-                    }
-
-                    // Si le pendu est complet, le joueur à perdu.
-                    if (_HangmanViewer.IsGameOver)
-                    {
-                        if (this.multijoueurLocal == true)
-                        {
-                            MessageBox.Show("Le joueur " + joueurActif.Pseudo + " a perdu.\nLe mot était : " + this.randomWord + "\n");
-                        }
-                        else
-                        {
-                            MessageBox.Show("Perdu ! Le mot était : " + randomWord + "\n");
-                        }
-                        StartNewGame();
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("La lettre doit être dans l'alphabet.");
-                }
-            
-            
-            
+                } 
             }
 
 
@@ -361,18 +392,18 @@ namespace JeuxDuPendu
                 KeyPressed(e.KeyChar);
             }
 
-        /// <summary>
-        /// Methode appelée lors du survol du bouton "Nouvelle partie".
-        /// - Change le curseur de la souris en "Main".
-        /// Elle change la couleur du bouton en orange.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void bReset_MouseHover(object sender, EventArgs e)
-            {
-                Cursor.Current = Cursors.Hand;
-                bReset.BackColor = Color.Orange;
-            }
+            /// <summary>
+            /// Methode appelée lors du survol du bouton "Nouvelle partie".
+            /// - Change le curseur de la souris en "Main".
+            /// Elle change la couleur du bouton en orange.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void bReset_MouseHover(object sender, EventArgs e)
+                {
+                    Cursor.Current = Cursors.Hand;
+                    bReset.BackColor = Color.Orange;
+                }
 
             /// <summary>
             /// Methode appelée lorsque la souris quitte le bouton "Nouvelle partie".
@@ -413,31 +444,31 @@ namespace JeuxDuPendu
 
             }
 
-        /// <summary>
-        /// Methode appelée lors du survol du bouton "Retour".
-        /// - Change le curseur de la souris en "Main"
-        /// Elle change la couleur du bouton en rouge.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void bRetour_MouseHover(object sender, EventArgs e)
+            /// <summary>
+            /// Methode appelée lors du survol du bouton "Retour".
+            /// - Change le curseur de la souris en "Main"
+            /// Elle change la couleur du bouton en rouge.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void bRetour_MouseHover(object sender, EventArgs e)
             {
-            Cursor.Current = Cursors.Hand;
-            bRetour.BackColor = Color.Red;
+                Cursor.Current = Cursors.Hand;
+                bRetour.BackColor = Color.Red;
             }
 
-        /// <summary>
-        /// Méthode appelée lorsque la souris n'est plus sur le bouton "Retour".
-        /// - Change le curseur de la souris en "Default"
-        /// Elle change la couleur en vert clair.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void bRetour_MouseLeave(object sender, EventArgs e)
-        {
-            Cursor.Current = Cursors.Default;
-            bRetour.BackColor = Color.LightGreen;
-        }
+            /// <summary>
+            /// Méthode appelée lorsque la souris n'est plus sur le bouton "Retour".
+            /// - Change le curseur de la souris en "Default"
+            /// Elle change la couleur en vert clair.
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
+            private void bRetour_MouseLeave(object sender, EventArgs e)
+            {
+                Cursor.Current = Cursors.Default;
+                bRetour.BackColor = Color.LightGreen;
+            }
         #endregion
 
             #region Gestion du bouton de sortie.
