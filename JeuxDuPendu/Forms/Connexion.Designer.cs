@@ -63,9 +63,9 @@
             this.label1.Location = new System.Drawing.Point(85, 104);
             this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(154, 37);
+            this.label1.Size = new System.Drawing.Size(139, 37);
             this.label1.TabIndex = 4;
-            this.label1.Text = "Pseudo : ";
+            this.label1.Text = "Pseudo :";
             // 
             // tBoxPseudo
             // 

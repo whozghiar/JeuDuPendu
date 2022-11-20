@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Creation));
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tBoxPseudo = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.bCreer = new System.Windows.Forms.Button();
             this.bRetour = new System.Windows.Forms.Button();
@@ -37,12 +37,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.pBoxLeave)).BeginInit();
             this.SuspendLayout();
             // 
-            // textBox1
+            // tBoxPseudo
             // 
-            this.textBox1.Location = new System.Drawing.Point(95, 63);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(274, 45);
-            this.textBox1.TabIndex = 0;
+            this.tBoxPseudo.Location = new System.Drawing.Point(95, 63);
+            this.tBoxPseudo.Name = "tBoxPseudo";
+            this.tBoxPseudo.Size = new System.Drawing.Size(274, 45);
+            this.tBoxPseudo.TabIndex = 0;
+            this.tBoxPseudo.TextChanged += new System.EventHandler(this.tBoxPseudo_TextChanged);
             // 
             // label1
             // 
@@ -50,9 +51,9 @@
             this.label1.Location = new System.Drawing.Point(90, 31);
             this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(126, 29);
+            this.label1.Size = new System.Drawing.Size(114, 29);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Pseudo : ";
+            this.label1.Text = "Pseudo :";
             // 
             // bCreer
             // 
@@ -107,13 +108,14 @@
             this.Controls.Add(this.bRetour);
             this.Controls.Add(this.bCreer);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.tBoxPseudo);
             this.Font = new System.Drawing.Font("MV Boli", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.Name = "Creation";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Jeu Du Pendu";
+            this.Load += new System.EventHandler(this.Creation_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pBoxLeave)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -122,7 +124,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tBoxPseudo;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button bCreer;
         private System.Windows.Forms.Button bRetour;

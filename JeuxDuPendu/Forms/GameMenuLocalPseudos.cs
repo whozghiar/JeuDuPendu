@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JeuxDuPendu.MyControls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,19 +11,15 @@ using System.Windows.Forms;
 
 namespace JeuxDuPendu.Forms
 {
-    public partial class Pseudo : Form
+    public partial class GameMenuLocalPseudos : Form
     {
         private Form parent;
         
-        public Pseudo()
+        public GameMenuLocalPseudos(Form parent)
         {
             InitializeComponent();
-        }
-
-        public Pseudo(Form parent)
-        {
-            InitializeComponent();
-            this.parent = parent;
+            this.parent = (GameMultijoueurMenu) parent;
+            
         }
 
         #region Getters
@@ -156,7 +153,9 @@ namespace JeuxDuPendu.Forms
         /// <param name="e"></param>
         private void bDemarrer_Click(object sender, EventArgs e)
         {
-            new GameForm(this, true, tBoxPseudo1.Text, tBoxPseudo2.Text).Show();
+            Player joueur1 = new Player(tBoxPseudo1.Text,Color.Blue);
+            Player joueur2 = new Player(tBoxPseudo2.Text,Color.Red);
+            new GameForm(this,true,joueur1,joueur2).Show();
             this.Hide();
         }
         /// <summary>

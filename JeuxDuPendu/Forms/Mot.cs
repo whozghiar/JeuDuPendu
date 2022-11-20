@@ -41,7 +41,7 @@ namespace JeuxDuPendu.Forms
         /// <returns></returns>
         public bool getWordReady()
         {
-            Console.WriteLine("Pitié");
+            
             return this.wordReady;
         }
 

@@ -36,6 +36,8 @@
             this.lJoueur = new System.Windows.Forms.Label();
             this.lMauvaisesLettres = new System.Windows.Forms.Label();
             this.pBoxLeave = new System.Windows.Forms.PictureBox();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.pBoxLeave)).BeginInit();
             this.SuspendLayout();
             // 
@@ -127,6 +129,14 @@
             this.pBoxLeave.MouseLeave += new System.EventHandler(this.pBoxLeave_MouseLeave);
             this.pBoxLeave.MouseHover += new System.EventHandler(this.pBoxLeave_MouseHover);
             // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            // 
+            // backgroundWorker2
+            // 
+            this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker2_DoWork);
+            // 
             // GameForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -162,6 +172,8 @@
         private System.Windows.Forms.Label lJoueur;
         private System.Windows.Forms.Label lMauvaisesLettres;
         private System.Windows.Forms.PictureBox pBoxLeave;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker2;
     }
 }
 

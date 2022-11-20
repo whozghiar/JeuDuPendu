@@ -39,7 +39,8 @@ namespace JeuxDuPendu.Forms
         /// <param name="e"></param>
         private void bCreer_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Indisponible");
+            new GameForm(this, new MyControls.Player(tBoxPseudo.Text, Color.Red)).Show();
+            this.Close();
             //new GameForm(true, true, this).Show();
             //this.Close();
         }
@@ -148,7 +149,34 @@ namespace JeuxDuPendu.Forms
             Cursor.Current = Cursors.Default;
         }
         #endregion
-        
+
         #endregion
+
+        /// <summary>
+        /// Méthode appelée lors d'un changement dans la tBoxPseudo.
+        /// - Vérifie si le pseudo est valide.
+        ///     Si le pseudo est valide, le bouton Créer est activé.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tBoxPseudo_TextChanged(object sender, EventArgs e)
+        {
+            // Si la tBoxPseudo n'est pas vide et n'est pas pleine d'espace alors le bouton bCréer est activé.
+            if (tBoxPseudo.Text.Trim() != "")
+            {
+                bCreer.Enabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Méthode appelée lors du chargement du formulaire.
+        /// - Désactivation du bouton bCréer.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Creation_Load(object sender, EventArgs e)
+        {
+            bCreer.Enabled = false; // Le bouton "Créer" est désactivé par défaut.
+        }
     }
 }

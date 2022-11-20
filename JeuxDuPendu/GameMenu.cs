@@ -17,7 +17,8 @@ namespace JeuxDuPendu
             InitializeComponent();
         }
 
-    #region Gestion des évènements.
+
+        #region Gestion des évènements.
 
 
 

@@ -16,10 +16,10 @@ namespace JeuxDuPendu.MyControls
         private Color couleur;
         public static List<Player> joueurs = new List<Player>();
         
-        public Player(string pseudo, int score, Color couleur)
+        public Player(string pseudo,Color couleur)
         {
             this.pseudo = pseudo;
-            this.score = score;
+            this.score = 0;
             this.couleur = couleur;
         }
 

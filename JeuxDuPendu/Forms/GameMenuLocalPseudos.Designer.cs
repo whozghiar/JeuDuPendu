@@ -1,6 +1,6 @@
 ﻿namespace JeuxDuPendu.Forms
 {
-    partial class Pseudo
+    partial class GameMenuLocalPseudos
     {
         /// <summary>
         /// Required designer variable.
@@ -122,7 +122,7 @@
             this.pBoxLeave.MouseLeave += new System.EventHandler(this.pBoxLeave_MouseLeave);
             this.pBoxLeave.MouseHover += new System.EventHandler(this.pBoxLeave_MouseHover);
             // 
-            // Pseudo
+            // GameMenuLocalPseudos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -134,7 +134,7 @@
             this.Controls.Add(this.bDemarrer);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.tBoxPseudo1);
-            this.Name = "Pseudo";
+            this.Name = "GameMenuLocalPseudos";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Jeu Du Pendu";
             this.Load += new System.EventHandler(this.Pseudo_Load);

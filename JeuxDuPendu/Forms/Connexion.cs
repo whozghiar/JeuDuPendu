@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JeuxDuPendu.MyControls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,7 +16,7 @@ namespace JeuxDuPendu.Forms
 
         private Form parent;
         private string ipServeur;
-        private string port;
+        private int port;
         private string pseudo;
         
         public Connexion()
@@ -43,7 +44,7 @@ namespace JeuxDuPendu.Forms
         /// Retourne le port.
         /// </summary>
         /// <returns></returns>
-        public string getIpPort()
+        public int getIpPort()
         {
             return this.port;
         }
@@ -70,12 +71,13 @@ namespace JeuxDuPendu.Forms
         private void bCreer_Click(object sender, EventArgs e)
         {
             this.ipServeur = this.tBoxPseudo.Text;
-            this.port = this.tBoxPort.Text;
+            this.port = int.Parse(this.tBoxPort.Text);
+            MessageBox.Show(this.port.ToString());
             this.pseudo = this.tBoxPseudo.Text;
 
-            //new GameForm(true, false, this, this.ipServeur, this.port, this.pseudo).Show();
-            MessageBox.Show("Indisponible.");
-            //this.Close();
+            new GameForm(parent, this.ipServeur, this.port, new Player(this.pseudo, Color.Red)).Show();
+            
+            this.Close();
         }
 
         /// <summary>

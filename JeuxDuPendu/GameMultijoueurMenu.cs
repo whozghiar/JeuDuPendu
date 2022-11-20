@@ -14,12 +14,13 @@ namespace JeuxDuPendu
 {
     public partial class GameMultijoueurMenu : Form
     {
-
-        private GameMenu parent;
-        public GameMultijoueurMenu(GameMenu parent)
+        
+        private Form parent;
+        public GameMultijoueurMenu(Form parent)
         {
             InitializeComponent();
-            this.parent = parent;
+            this.parent = (GameMenu) parent;
+            
         }
 
         #region Gestion des évènements.
@@ -35,7 +36,7 @@ namespace JeuxDuPendu
         /// <param name="e"></param>
         private void bMultiLocal_Click(object sender, EventArgs e)
         {
-            new Pseudo(this).Show();
+            new GameMenuLocalPseudos(this).Show();
             this.Hide();
         }
         /// <summary>

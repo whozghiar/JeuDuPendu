@@ -64,11 +64,11 @@
     <Compile Include="Forms\Mot.Designer.cs">
       <DependentUpon>Mot.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Pseudo.cs">
+    <Compile Include="Forms\GameMenuLocalPseudos.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Pseudo.Designer.cs">
-      <DependentUpon>Pseudo.cs</DependentUpon>
+    <Compile Include="Forms\GameMenuLocalPseudos.Designer.cs">
+      <DependentUpon>GameMenuLocalPseudos.cs</DependentUpon>
     </Compile>
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>
@@ -104,8 +104,8 @@
     <EmbeddedResource Include="Forms\Mot.resx">
       <DependentUpon>Mot.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Pseudo.resx">
-      <DependentUpon>Pseudo.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\GameMultijoueurLocalMenu.resx">
+      <DependentUpon>GameMenuLocalPseudos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GameForm.resx">
       <DependentUpon>GameForm.cs</DependentUpon>
